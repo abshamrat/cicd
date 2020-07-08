@@ -31,3 +31,13 @@ jobs:
       - checkout
       - run: echo "A first hello"
 ```
+Let's explain a bit very shortly what's in the `config.yml` we will explan more later.
+
+- `version`: Specifying which circleci config version we are using.
+- `jobs`: All job will be defined under the jobs block
+    - `build`: is the name of our job (we can specify any name)
+        - `docker`: This is kind of a executor here
+            - `- image`: Specifying our docker image it can be multiple
+        - `steps`: is the set of command that will run step by step based on our defination.
+            - `checkout`: is actually pulling your code from github
+            - `run`: so what action we want to perform that action/command will be written on `run` it will expect any command that you can image like running command in terminal.
