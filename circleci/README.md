@@ -17,4 +17,17 @@ Here we will compare with JSON so that we can easily understand which syntax is 
 <img src="./assets/json-vs-yaml.png">
 
 ### Getting Started
-So, let's configure a pipeline
+So, let's configure a pipeline for a mini project. We will start from minimal configuration.
+- First of all, login to circleci with github
+- Setup project
+- Add a directory `.circleci`  to your project root and a `config.yml` with content of
+```yml
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8.10
+    steps:
+      - checkout
+      - run: echo "A first hello"
+```
