@@ -73,7 +73,7 @@ Will write it
 
 Here we are seeing a couple of new things, what those are
 
-- `Workflows` allow you to define the sequence of your job and concurrency. You can see under workflow we've written `build` and `test` job and both are running parallelly. We will talk more about workflow strategy in next config.
+- `Workflows` allow you to define the sequence of your job and concurrency. You can see under workflow we've written `build` and `test` job and those are running sequentially. We will talk more about workflow strategy in next config.
 
 Let's commit some codes and see what happens.
 
