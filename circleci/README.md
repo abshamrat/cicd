@@ -20,7 +20,7 @@ Here we will compare with JSON so that we can easily understand which syntax is 
 So, let's configure a pipeline for a mini project. We will start from minimal configuration.
 - First of all, login to circleci with github
 - Setup project
-- Add a directory `.circleci`  to your project root and a `config.yml` with content of
+- Create a directory `.circleci`  to your project root and a `config.yml` under it with a minimal content of
 ```yml
 version: 2.1
 jobs:
@@ -35,9 +35,13 @@ Let's explain a bit very shortly what's in the `config.yml` we will explan more 
 
 - `version`: Specifying which circleci config version we are using.
 - `jobs`: All job will be defined under the jobs block
-    - `build`: is the name of our job (we can specify any name)
-        - `docker`: This is kind of a executor here
-            - `- image`: Specifying our docker image it can be multiple
-        - `steps`: Is the set of command that will run step by step based on our defination.
+    - `build`: is the name of our job
+        - `docker`: This is kind of a executor (Where the job steps will run)
+            - `- image`: Specifying our docker image (it can be multiple)
+        - `steps`: is the set of commands that will run step by step based on our defination.
             - `checkout`: Is actually pulling your code from github
-            - `run`: So what action we want to perform that action/command will be written on `run` it will expect any command that you can imagine like running command in terminal.
+            - `run`: Here we will write our commands. you can imagine like running command in terminal.
+
+Let's push our code and see what happens on circleci.
+<Image HERE>
+So we can see a job called build i
