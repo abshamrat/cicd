@@ -20,16 +20,27 @@ Here we will compare with JSON so that we can easily understand which syntax is 
 So, let's configure a pipeline for a mini project. We will start from minimal configuration.
 - First of all, login to circleci with github
 - Setup project
-- Create a directory `.circleci`  to your project root and a `config.yml` under it with a minimal content of
+- Create a config file `.circleci/config.yml` to your project root with a minimal content of
 ```yml
 version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/node:8.10
+      - image: circleci/node:10
     steps:
       - checkout
-      - run: echo "A first hello"
+      - run: echo "A first shell command"
+      - run:
+          name: A Hello-World Step
+          command: |
+            echo 'Hello World!'
+            echo 'This is the delivery pipeline'
+      - run:
+          name: Code Has Arrived
+          command: |
+            ls -al
+            echo '^^^That should look familiar^^^'
+
 ```
 Let's explain a bit very shortly what's in the `config.yml` we will explan more later.
 
@@ -38,9 +49,11 @@ Let's explain a bit very shortly what's in the `config.yml` we will explan more 
     - `build`: is the name of our job
         - `docker`: This is kind of a executor (Where the job steps will run)
             - `- image`: Specifying our docker image (it can be multiple)
-        - `steps`: is the set of commands that will run step by step based on our defination.
+        - `steps`: is the set of commands that will run step by step based on our definition.
             - `checkout`: Is actually pulling your code from github
-            - `run`: Here we will write our commands. you can imagine like running command in a terminal.
+            - `run`: This is all about shell so we can write our any command. you can imagine like running command in a terminal. As you can see there is a 2 way of defining it. One is simply define the command and another one is (This is basically the standard way)
+                - `name`: A name of your command.
+                - `command`: This is holding your shell command, write down `|` in order to add multiple lines.
 
 Let's push our code and see what happens on circleci.
 <Image HERE>
@@ -58,3 +71,7 @@ okay, let's implement the linter and tests first, will do more incrementally.
 Will write it
 ```
 
+Here we are seeing a couple of new things, what those are
+
+- `Workflows` allow you to define the sequence of your job and concurrency. You can see under workflow we've written `build` and `test` job and both are running parallelly. We will talk more about workflow strategy in next config.
+- 
