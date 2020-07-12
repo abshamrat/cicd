@@ -40,8 +40,21 @@ Let's explain a bit very shortly what's in the `config.yml` we will explan more 
             - `- image`: Specifying our docker image (it can be multiple)
         - `steps`: is the set of commands that will run step by step based on our defination.
             - `checkout`: Is actually pulling your code from github
-            - `run`: Here we will write our commands. you can imagine like running command in terminal.
+            - `run`: Here we will write our commands. you can imagine like running command in a terminal.
 
 Let's push our code and see what happens on circleci.
 <Image HERE>
-So we can see a job called build i
+So we can see a job called build is passed (Green color refer to pass red is failed). Expand the job, as we can see the echo is printed in console.
+
+Now we will extend our config little more based on our goal. So, what is our goal? Our goal is while someone commit code then 
+1. Run lint to check programmatic and stylistic errors. (CI part)
+2. Run tests to verify integrity. (CI part)
+3. If tests are passed then build and upload image. (CD part)
+4. Deploy it when it is realise branch. (CD part)
+
+okay, let's implement the linter and tests first, will do more incrementally.
+
+```yaml
+Will write it
+```
+
