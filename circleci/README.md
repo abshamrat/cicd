@@ -74,4 +74,25 @@ Will write it
 Here we are seeing a couple of new things, what those are
 
 - `Workflows` allow you to define the sequence of your job and concurrency. You can see under workflow we've written `build` and `test` job and both are running parallelly. We will talk more about workflow strategy in next config.
-- 
+
+Let's commit some codes and see what happens.
+
+`IMAGE`
+
+So, as we can see our build is passed but test is failed. Why it failed? okay, let me explore a bit. We can clearly see that the command we are executing that is not available but why? in the `build` job we have pulled the code is not available to the `test` job? that means is it running under new environment? (container) So, do we need to checkout the code again and again install the dependency? Wait, no it should not be like that. Okay, then how we will persist our workspace so that it can be used by any other job? Let me add some new config to do so.
+
+```yaml
+Config will be written
+```
+
+Have a look newly added stuff
+- `persist_to_workspace`: Special step used to persist a temporary file to be used by another job in the workflow.
+- `attach_workspace`: Special step used to attach the workflow’s workspace to the current container. The full contents of the workspace are downloaded and copied into the directory the workspace is being attached at.
+
+Commit it and see if it works.
+
+`IMAGE`
+
+It works. Okay, according to our plan now we will move to the `image-building` job.
+
+
