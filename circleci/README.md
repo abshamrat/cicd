@@ -12,12 +12,12 @@ CircleCI uses a YAML configuration file to declare the pipeline and it lives und
 
 #### YAML in short:
 <img src="./assets/yaml.jpg">
-Let get familier with some basic syntax that will frequently use for the configuration. 
+Let get familiar with some basic syntax that will frequently use for the configuration. 
 Here we will compare with JSON so that we can easily understand which syntax is using for what.
 <img src="./assets/json-vs-yaml.png">
 
 ### Getting Started
-So, let's configure a pipeline for a mini project. We will start from minimal configuration.
+So, let's configure a pipeline for a mini [project](https://github.com/shamrat17/todo-nestjs.git). We will start from minimal configuration.
 - First of all, login to circleci with github
 - Setup project
 - Create a config file `.circleci/config.yml` to your project root with a minimal content of
@@ -42,7 +42,7 @@ jobs:
             echo '^^^That should look familiar^^^'
 
 ```
-Let's explain a bit very shortly what's in the `config.yml` we will explan more later.
+Let's explain a bit very shortly what's in the `config.yml` we will explain more later.
 
 - `version`: Specifying which circleci config version we are using.
 - `jobs`: All job will be defined under the jobs block
@@ -56,8 +56,11 @@ Let's explain a bit very shortly what's in the `config.yml` we will explan more 
                 - `command`: This is holding your shell command, write down `|` in order to add multiple lines.
 
 Let's push our code and see what happens on circleci.
-<Image HERE>
-So we can see a job called build is passed (Green color refer to pass red is failed). Expand the job, as we can see the echo is printed in console.
+<Image src="./assets/init-build.png">
+So we can see a job called build is passed (Green color refer to pass red is failed) and the steps are named based on the given name/command. 
+Now if we expand the job, we can see the echo is printed in the console.
+<Image src="./assets/init-build-steps.png">
+
 
 Now we will extend our config little more based on our goal. So, what is our goal? Our goal is while someone commit code then 
 1. Run lint to check programmatic and stylistic errors. (CI part)
@@ -65,10 +68,67 @@ Now we will extend our config little more based on our goal. So, what is our goa
 3. If tests are passed then build and upload image. (CD part)
 4. Deploy it when it is realise branch. (CD part)
 
-okay, let's implement the linter and tests first, will do more incrementally.
+Okay, let's implement the linter and tests first, will do more incrementally.
 
 ```yaml
-Will write it
+version: 2.1
+executors:
+  node:
+    docker:
+      - image: 'circleci/node:12'
+    shell: /bin/bash
+    working_directory: ~/app
+    resource_class: small
+
+jobs:
+  npm-install:
+    executor: node
+    steps:
+      - checkout
+      - run:
+          name: Install Node.js dependencies with Npm
+          command: |
+            npm ci
+            # npm run compile
+      - persist_to_workspace:
+          root: ~/app
+          paths:
+            - .
+
+  npm-lint:
+    executor: node
+    steps:
+      - attach_workspace:
+          at: ~/app
+      - run:
+          name: Lint the source code
+          command: npm run lint
+
+  unit-tests:
+    executor: node
+    steps:
+      - attach_workspace:
+          at: ~/app
+      - run:
+          name: Unit Tests
+          command: |
+            npm run test:cov
+          no_output_timeout: 5m
+      - store_artifacts:
+          path: ~/app/coverage
+          destination: coverage
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - npm-install
+      - npm-lint:
+          requires:
+            - npm-install
+      - unit-tests:
+          requires:
+            - npm-install
 ```
 
 Here we are seeing a couple of new things, what those are
