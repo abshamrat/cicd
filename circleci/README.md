@@ -197,8 +197,9 @@ workflows:
 Have a look newly added stuff
 - `persist_to_workspace`: Special step used to persist a temporary file to be used by another job in the workflow.
 - `attach_workspace`: Special step used to attach the workflow’s workspace to the current container. The full contents of the workspace are downloaded and copied into the directory the workspace is being attached at.
+- `store_artifacts`: Step uploads coverage artifacts: a directory (~/app/coverage). After the artifacts successfully upload, we can view them in the Artifacts tab of the Job page.
 
-Commit it and see if it works.
+Now let's commit the latest config and see if it works.
 
 <Image src="./assets/workflow-2.png">
 
@@ -216,6 +217,6 @@ Artifacts view
 <Image src="./assets/workflow-2-unit-test-artifacts.png">
 
 
-It works. Okay, according to our plan now we will move to the `image-building` job.
+It works. Okay, according to our plan now we will move to the `docker-image-build` job.
 
 
