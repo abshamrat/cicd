@@ -89,6 +89,69 @@ jobs:
           name: Install Node.js dependencies with Npm
           command: |
             npm ci
+
+  npm-lint:
+    executor: node
+    steps:
+      - run:
+          name: Lint the source code
+          command: npm run lint
+
+  unit-tests:
+    executor: node
+    steps:
+      - run:
+          name: Unit Tests
+          command: |
+            npm run test:cov
+          no_output_timeout: 5m
+      - store_artifacts:
+          path: ~/app/coverage
+          destination: coverage
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - npm-install
+      - npm-lint:
+          requires:
+            - npm-install
+      - unit-tests:
+          requires:
+            - npm-install
+```
+
+Here we are seeing a couple of new things, what those are
+
+- `Workflows` allow you to define the sequence of your job and concurrency. You can see under workflow we've written `npm-install`, `npm-lint` and `unit-tests` job. We will talk more about workflow strategy in next config.
+
+Let's commit some codes and see what happens.
+
+<Image src="./assets/workflow-1.png">
+<Image src="./assets/workflow-1-error.png">
+
+So, as we can see our build is passed but test is failed. Why it failed? okay, let me explore a bit. We can clearly see that the command we are executing that is not available but why? in the `build` job we have pulled the code is not available to the `test` job? that means is it running under new environment? (container) So, do we need to checkout the code again and again install the dependency? Wait, no it should not be like that. Okay, then how we will persist our workspace so that it can be used by any other job? Let me add some new config to do so.
+
+```yaml
+version: 2.1
+executors:
+  node:
+    docker:
+      - image: 'circleci/node:12'
+    shell: /bin/bash
+    working_directory: ~/app
+    resource_class: small
+
+jobs:
+  npm-install:
+    executor: node
+    steps:
+      - checkout
+      - run:
+          name: Install Node.js dependencies with Npm
+          command: |
+            npm ci
             # npm run compile
       - persist_to_workspace:
           root: ~/app
@@ -131,27 +194,27 @@ workflows:
             - npm-install
 ```
 
-Here we are seeing a couple of new things, what those are
-
-- `Workflows` allow you to define the sequence of your job and concurrency. You can see under workflow we've written `build` and `test` job and those are running sequentially. We will talk more about workflow strategy in next config.
-
-Let's commit some codes and see what happens.
-
-`IMAGE`
-
-So, as we can see our build is passed but test is failed. Why it failed? okay, let me explore a bit. We can clearly see that the command we are executing that is not available but why? in the `build` job we have pulled the code is not available to the `test` job? that means is it running under new environment? (container) So, do we need to checkout the code again and again install the dependency? Wait, no it should not be like that. Okay, then how we will persist our workspace so that it can be used by any other job? Let me add some new config to do so.
-
-```yaml
-Config will be written
-```
-
 Have a look newly added stuff
 - `persist_to_workspace`: Special step used to persist a temporary file to be used by another job in the workflow.
 - `attach_workspace`: Special step used to attach the workflow’s workspace to the current container. The full contents of the workspace are downloaded and copied into the directory the workspace is being attached at.
 
 Commit it and see if it works.
 
-`IMAGE`
+<Image src="./assets/workflow-2.png">
+
+Job `npm-install`
+<Image src="./assets/workflow-2-npm-install.png">
+
+Job `npm-lint`
+<Image src="./assets/workflow-2-npm-lint.png">
+
+Job `unit-tests`
+<Image src="./assets/workflow-2-unit-test.png">
+Expand view
+<Image src="./assets/workflow-2-unit-test-expand.png">
+Artifacts view
+<Image src="./assets/workflow-2-unit-test-artifacts.png">
+
 
 It works. Okay, according to our plan now we will move to the `image-building` job.
 
