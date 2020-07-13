@@ -87,8 +87,7 @@ jobs:
       - checkout
       - run:
           name: Install Node.js dependencies with Npm
-          command: |
-            npm ci
+          command: npm ci
 
   npm-lint:
     executor: node
@@ -105,9 +104,6 @@ jobs:
           command: |
             npm run test:cov
           no_output_timeout: 5m
-      - store_artifacts:
-          path: ~/app/coverage
-          destination: coverage
 
 workflows:
   version: 2
@@ -131,7 +127,7 @@ Let's commit some codes and see what happens.
 <Image src="./assets/workflow-1.png">
 <Image src="./assets/workflow-1-error.png">
 
-So, as we can see our build is passed but test is failed. Why it failed? okay, let me explore a bit. We can clearly see that the command we are executing that is not available but why? in the `build` job we have pulled the code is not available to the `test` job? that means is it running under new environment? (container) So, do we need to checkout the code again and again install the dependency? Wait, no it should not be like that. Okay, then how we will persist our workspace so that it can be used by any other job? Let me add some new config to do so.
+So, as we can see our `npn-install` job is passed but `npm-lint` and `unit-tests` is failed. Why it failed? okay, let me explore a bit. We can clearly see that the command we are executing that is not available but why? In the `npn-install` job we have pulled the code is not available to the `npm-lint` job? that means is it running under new environment? (container) So, do we need to checkout the code again and install the dependency? Wait, no it should not be like that. Okay, then how we will persist our workspace so that it can be used by any other job? Let me add some new config to do so.
 
 ```yaml
 version: 2.1
@@ -150,9 +146,8 @@ jobs:
       - checkout
       - run:
           name: Install Node.js dependencies with Npm
-          command: |
-            npm ci
-            # npm run compile
+          command: npm ci
+
       - persist_to_workspace:
           root: ~/app
           paths:
