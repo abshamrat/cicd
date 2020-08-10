@@ -144,10 +144,18 @@ jobs:
     executor: node
     steps:
       - checkout
+      - restore_cache:
+          # Find a cache corresponding to this specific package-lock.json checksum
+          # when this file is changed, this key will fail
+          key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Install Node.js dependencies with Npm
           command: npm ci
-
+      - save_cache:
+          # save the dependency cache with defined key
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
       - persist_to_workspace:
           root: ~/app
           paths:
@@ -211,7 +219,12 @@ Expand view
 Artifacts view
 <Image src="./assets/workflow-2-unit-test-artifacts.png">
 
+It works.
+<!-- Okay, according to our plan now we will move to the `docker-image-build` job. -->
 
-It works. Okay, according to our plan now we will move to the `docker-image-build` job.
+### Further More
+- Using Orbs: [Link](https://circleci.com/docs/2.0/using-orbs/)
+- Commands: [Link] (https://circleci.com/docs/2.0/reusing-config/)
+- Advanced Config: [Link] (https://circleci.com/docs/2.0/adv-config/#section=configuration)
 
 
