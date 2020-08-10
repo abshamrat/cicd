@@ -224,7 +224,7 @@ It works.
 
 ### Further More
 - Using Orbs. [Link](https://circleci.com/docs/2.0/using-orbs/)
-- Commands. [Link] (https://circleci.com/docs/2.0/reusing-config/)
-- Advanced Config. [Link] (https://circleci.com/docs/2.0/adv-config/#section=configuration)
+- Commands. [Link](https://circleci.com/docs/2.0/reusing-config/)
+- Advanced Config. [Link](https://circleci.com/docs/2.0/adv-config/#section=configuration)
 - CI/CD for Node.js projects: using CircleCI, Kubernetes, and Docker with deployment. [Link](https://circleci.com/blog/electron-builds/)
 
